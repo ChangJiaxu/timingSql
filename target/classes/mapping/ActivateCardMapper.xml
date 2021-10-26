@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.xy.dao.ActivateCardMapping">
+
+    <!--column不做限制，可以为任意表的字段，而property须为type 定义的pojo属性-->
+    <resultMap id="ActivateCard" type="com.xy.bo.ActivateCardBO">
+        <id column="CODE" jdbcType="VARCHAR" property="code" />
+        <result column="goodstypename" jdbcType="VARCHAR" property="goodstypename"/>
+        <result column="salePersonnelCph" jdbcType="VARCHAR" property="salePersonnelCph"/>
+        <result column="salePersonnelAgentName" jdbcType="VARCHAR" property="salePersonnelAgentName"/>
+        <result column="salePersonnelAgentSfzh" jdbcType="VARCHAR" property="salePersonnelAgentSfzh"/>
+        <result column="salePersonnelMc" jdbcType="VARCHAR" property="salePersonnelMc"/>
+        <result column="salePersonnelSfzh" jdbcType="VARCHAR" property="salePersonnelSfzh"/>
+        <association property="purchaseTestBO" javaType="com.xy.bo.PurchaseTestBO">
+            <result  column="qsCode1Name" jdbcType="VARCHAR" property="qsCode1Name"/>
+            <result  column="qsCode1Value" jdbcType="VARCHAR" property="qsCode1Value"/>
+            <result  column="qsCode2Name" jdbcType="VARCHAR" property="qsCode2Name"/>
+            <result  column="qsCode2Value" jdbcType="VARCHAR" property="qsCode2Value"/>
+            <result  column="qsCode3Name" jdbcType="VARCHAR" property="qsCode3Name"/>
+            <result  column="qsCode3Value" jdbcType="VARCHAR" property="qsCode3Value"/>
+            <result  column="qsCode4Name" jdbcType="VARCHAR" property="qsCode4Name"/>
+            <result  column="qsCode4Value" jdbcType="VARCHAR" property="qsCode4Value"/>
+            <result  column="qsCode5Name" jdbcType="VARCHAR" property="qsCode5Name"/>
+            <result  column="qsCode5Value" jdbcType="VARCHAR" property="qsCode5Value"/>
+            <result  column="qsCode6Name" jdbcType="VARCHAR" property="qsCode6Name"/>
+            <result  column="qsCode6Value" jdbcType="VARCHAR" property="qsCode6Value"/>
+            <result  column="qsCode7Name" jdbcType="VARCHAR" property="qsCode7Name"/>
+            <result  column="qsCode7Value" jdbcType="VARCHAR" property="qsCode7Value"/>
+            <result  column="qsCode8Name" jdbcType="VARCHAR" property="qsCode8Name"/>
+            <result  column="qsCode8Value" jdbcType="VARCHAR" property="qsCode8Value"/>
+        </association>
+
+    </resultMap>
+
+
+    <select id="selectActivateCardAll" parameterType="java.lang.Integer" resultType="com.xy.bo.SellGrainInfoBo">
+        SELECT
+            A.goodstypename AS 'goodstypename',
+                A.sale_personnel_cph AS 'salePersonnelCph',
+                A.sale_personnel_agent_name AS 'salePersonnelAgentName',
+                A.sale_personnel_agent_sfzh AS 'salePersonnelAgentSfzh',
+                A.sale_personnel_mc AS 'salePersonnelMc',
+                A.sale_personnel_sfzh AS 'salePersonnelSfzh',
+                B.qs_code1_name AS 'qsCode1Name',
+                B.qs_code1_value AS 'qsCode1Value',
+                B.qs_code2_name AS 'qsCode2Name',
+                B.qs_code2_value AS 'qsCode2Value',
+                B.qs_code3_name AS 'qsCode3Name',
+                B.qs_code3_value AS 'qsCode3Value',
+                B.qs_code4_name AS 'qsCode4Name',
+                B.qs_code4_value AS 'qsCode4Value',
+                B.qs_code5_name AS 'qsCode5Name',
+                B.qs_code5_value AS 'qsCode5Value',
+                B.qs_code6_name AS 'qsCode6Name',
+                B.qs_code6_value AS 'qsCode6Value',
+                B.qs_code7_name AS 'qsCode7Name',
+                B.qs_code7_value AS 'qsCode7Value',
+                B.qs_code8_name AS 'qsCode8Name',
+                B.qs_code8_value AS 'qsCode8Value',
+                C.date_mjrq AS 'dateMjrq',
+                C.date_pjrq AS 'datePjrq',
+                C.weight_czkz AS 'weightCzkz',
+                C.weight_jz AS 'weightJz',
+                B.money_djje_jz  AS 'moneyDjjeJz',
+                D.weight_cz AS 'weightCz',
+                D.paymentstate AS 'paymentstate',
+                D.money_sfkje AS 'moneySfkje',
+                D.settlementtype AS 'settlementtype',
+                E.money_price AS 'moneyPrice',
+                E.money_sfkje AS 'moneySfkje2',
+                CASE
+                    D.settlementtype
+                    WHEN 1 THEN
+                        G.date_fkrq ELSE F.date_fkrq
+                    END AS 'dateFkrq',
+                CASE
+                    D.settlementtype
+                    WHEN 1 THEN
+                        G.docstate ELSE F.docstate
+                    END AS 'docstate'
+        FROM
+            customer
+                INNER JOIN customer_ext ON customer.third_accounts = customer_ext.cust_id
+                LEFT JOIN new_operator ON customer_ext.consultant_id = new_operator.user_id
+                left join xy_finance_manage_purchase_activate_card A on customer_ext.id_card_num = A.sale_personnel_sfzh and customer_ext.id_card_verify = 'true'
+                LEFT JOIN xy_finance_manage_purchase_test B ON A.CODE = B.
+                CODE LEFT JOIN xy_finance_manage_purchase_weight C ON A.CODE = C.
+                CODE LEFT JOIN xy_finance_manage_purchase_settlement D ON a.CODE = D.
+                CODE LEFT JOIN xy_finance_manage_purchase_second_settlement E ON D.CODE = E.settlementcode
+                AND D.settlementtype = 1
+                LEFT JOIN xy_finance_manage_purchase_payment F ON A.CODE = F.
+                CODE LEFT JOIN xy_finance_manage_purchase_payment G ON E.CODE = G.CODE
+    </select>
+
+
+</mapper>

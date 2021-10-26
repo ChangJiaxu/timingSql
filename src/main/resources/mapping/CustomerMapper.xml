@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.xy.dao.CustomerMapping">
+
+    <select id="selectById" parameterType="java.lang.Integer" resultType="com.xy.bo.CustomerBo">
+        SELECT username FROM customer where id = #{customerId,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectCustomerAll" parameterType="java.lang.Integer" resultType="com.xy.bo.CustomerBo">
+        SELECT
+            customer.id ,
+            customer.username ,
+            customer.nickname ,
+            customer.phone ,
+            customer_ext.real_name ,
+            customer_ext.id_card_num ,
+            new_operator.username AS 'operator_name'
+        FROM
+            customer
+                INNER JOIN customer_ext ON customer.third_accounts = customer_ext.cust_id
+                LEFT JOIN new_operator ON customer_ext.consultant_id = new_operator.user_id;
+    </select>
+
+
+</mapper>
